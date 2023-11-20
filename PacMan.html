@@ -1,0 +1,174 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch&display=swap" rel="stylesheet">
+        <style>
+            body {
+            background-color: rgb(17, 18, 18);
+            font-family: 'Chakra Petch', sans-serif;
+            }
+
+            .grid-container {
+            display: grid;
+            grid-template-columns: auto auto auto auto auto auto auto auto auto;
+            grid-template-rows: auto 2fr auto;
+            background-color: #0a5863;
+            padding: 10px;
+            height: 95vh;
+            gap: 5px;
+            position: relative;
+            }
+
+            .title{
+            grid-column: 1 / 10;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 2px;
+            font-size: 20px;
+            text-align: center;
+            }
+
+            .walls-pacmen {
+            grid-column: 1 / 10;
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 2px;
+            background-color: rgba(12, 11, 11, 0.8);
+            position: relative;
+            text-align: center;
+            }
+
+
+            .button1 {
+            font-family: inherit;
+            position: relative;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+            text-align: center;
+            grid-column: 8 / 9;
+            }
+
+            .button2 {
+            font-family: inherit;
+            font-size: 1em;
+            position: relative;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+            text-align: center;
+            grid-column: 9 / 10;
+            }
+
+            button:hover {
+            background-color: rgb(231, 231, 167);
+            }
+            
+        </style>
+    </head>
+
+<SCRIPT>
+    var pos = 0;
+    const pacArray = [
+        ['PacMan1.png', 'PacMan2.png'],
+        ['PacMan3.png', 'PacMan4.png']
+    ];
+
+    const pacMen = []; // This array holds all the pacmen
+
+    function setToRandom(scale) {
+        return {
+            x: Math.random() * scale,
+            y: Math.random() * scale
+        }
+    }
+    // Factory to make a PacMan at a random position with random velocity
+    function makePac() {
+        // returns an object with random values scaled {x: 33, y: 21}
+        //this part is shadow DOM
+        let velocity = setToRandom(10); // {x:?, y:?}
+        let position = setToRandom(200);
+       
+        // Add image to div id = game
+        let game = document.getElementById('game');
+        let wallsPacmen= document.getElementById('walls');
+       
+        let newimg = document.createElement('img');
+        newimg.style.position = 'absolute';
+        newimg.src = 'PacMan1.png';
+        newimg.width = 100;
+        newimg.height = 100;
+        //
+        // set position here 
+        newimg.style.left = position.x;
+        newimg.style.top = position.y;
+        // add new Child image to walls and then game
+        wallsPacmen.appendChild(newimg);
+        // game.appendChild(newimg);
+        // return details in an object
+        return {
+            position,
+            velocity,
+            newimg
+        }
+    }
+
+    function update() {
+        //loop over pacmen array and move each one and ...
+        pacMen.forEach((item) => {
+            checkCollisions(item)
+            item.position.x += item.velocity.x;
+            item.position.y += item.velocity.y;
+        // and move image in DOM
+            item.newimg.style.left = item.position.x;
+            item.newimg.style.top = item.position.y;
+        })
+        setTimeout(update, 20);
+
+    }
+
+    
+        
+
+    function checkCollisions(item,direction) {
+        //
+        // var wallsPacmen= document.getElementById('walls');
+        // wallsPacmen.style.width = "auto";
+        // wallsPacmen.style.height = "auto";
+        // // and move walls in DOM
+        // var wallsWidth =  wallsPacmen.style.width;
+        // var wallsHeight = wallsPacmen.style.height;
+        
+        // detect collision with all walls and make pacman bounce
+        if(item.position.x + item.velocity.x + item.newimg.width > window.innerWidth ||
+        item.position.x + item.velocity.x < 0) item.velocity.x = -item.velocity.x;
+        if(item.position.y + item.velocity.y + item.newimg.height > window.innerHeight||
+        item.position.y + item.velocity.y < 0) item.velocity.y = -item.velocity.y;
+        //
+    }
+
+    function makeOne() {
+        pacMen.push(makePac()); // add a new PacMan
+
+    }
+</SCRIPT>
+
+<body>
+    
+    <div class='grid-container' id='game'>
+        <div class="title">
+            <h1 style-text-align='center'>PACMEN EXERCISE</h1>
+        </div>
+        <div id="walls" class="walls-pacmen">
+            Pacmen Area
+
+        </div>
+        <div class="button1">
+            <button  onclick='makeOne()' width='200' height='30'>Add PacMan</button>
+        </div>
+        <div class="button2"> 
+            <button style-font-family='Chakra Petch' onclick='update()' width='200' height='30'>Start Game</button>
+        </div>
+        </div>
+
+    </div>
+    
+</body>
+
+</html>
